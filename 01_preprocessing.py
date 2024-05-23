@@ -32,14 +32,14 @@ def main(subject):
     print('Starting Pre-processing...')
 
     ### Load Data ###
-    bids_root = '/rds/projects/b/bagshaap-hcp-thalamus/n170_bids/'
+    bids_root = 'inputs/data'
     sessions = get_entity_vals(bids_root, "session", ignore_sessions="on")
     datatype = "eeg"
     extensions = [".fdt", ".tsv"]  # ignore .json files
     bids_path = BIDSPath(root=bids_root, datatype=datatype)
     task = "N170"
     suffix = "eeg"
-    subject = "002"
+    subject = subject.zill(3)
     bids_path = bids_path.update(subject=subject, task=task, suffix=suffix)
     raw = read_raw_bids(bids_path=bids_path, verbose=False, extra_params = {'preload' : True})
     raw.rename_channels({'FP1' : 'Fp1','FP2' : 'Fp2'})
