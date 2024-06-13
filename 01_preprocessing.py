@@ -44,8 +44,7 @@ def main(subject):
 
     # Read Raw
     raw = read_raw_bids(bids_path=bids_path, verbose=False, extra_params = {'preload' : True})
-    raw.rename_channels({'FP1' : 'Fp1','FP2' : 'Fp2'})
-    raw.set_montage('standard_1020')
+    raw.set_channel_types({'EEG061' : 'eog', 'EEG062' : 'eog', 'EEG063' : 'ecg', 'EEG064' : 'misc'})
 
     ### Create Initial MNE Report ###
     report = mne.Report(title=f"Pre-processing Report: sub-{subject}")
@@ -77,22 +76,18 @@ def main(subject):
     raw_filt = raw_average_ref.copy().filter(l_freq=1.0, h_freq=None)
     ica.fit(raw_filt)
 
-    eog_epochs = mne.preprocessing.create_eog_epochs(raw=raw_average_ref, ch_name=["Fp1", 'Fp2'])
+    ecg_components, ecg_scores = ica.find_bads_ecg(raw_average_ref)
+    eog_components, eog_scores = ica.find_bads_eog(raw_average_ref)
 
-    eog_components, eog_scores = ica.find_bads_eog(
-    inst=eog_epochs,
-    ch_name=["Fp1", 'Fp2'],
-    )
-
-    ica.exclude = eog_components
+    ica.exclude = eog_components + ecg_components
 
     report.add_ica(
     ica=ica,
     title="ICA Denoising",
     picks=ica.exclude,  # plot the excluded EOG components
     inst=raw_average_ref,
-    eog_evoked=eog_epochs.average(),
-    eog_scores=eog_scores
+    eog_scores=eog_scores,
+    ecg_scores=ecg_scores
     )
 
     ### Save MNE Report ###
