@@ -34,13 +34,15 @@ def main(subject):
 
     ### Load Data ###
     bids_root = 'inputs/data'
-    sessions = get_entity_vals(bids_root, "session", ignore_sessions="on")
-    datatype = "eeg"
-    extensions = [".fdt", ".tsv"]  # ignore .json files
+    get_entity_vals(bids_root, "session")
+    datatype = "meg"
+    extensions = [".fif", ".tsv"]  # ignore .json files
     bids_path = BIDSPath(root=bids_root, datatype=datatype)
-    task = "N170"
-    suffix = "eeg"
-    bids_path = bids_path.update(subject=subject, task=task, suffix=suffix)
+    task = "facerecognition"
+    suffix = "meg"
+    bids_path = bids_path.update(subject=subject, task=task, suffix=suffix, session = 'meg', run = '01')
+
+    # Read Raw
     raw = read_raw_bids(bids_path=bids_path, verbose=False, extra_params = {'preload' : True})
     raw.rename_channels({'FP1' : 'Fp1','FP2' : 'Fp2'})
     raw.set_montage('standard_1020')
