@@ -11,6 +11,7 @@ raw and epochs are saved in the MNE bids derivative folder.
 
 ### Import Packages ###
 import mne
+import re
 import numpy as np
 import pandas as pd
 from mne_bids import (
@@ -98,4 +99,4 @@ def main(subject):
 ### Start Pre-processing ###
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    main(re.search(r'\d+', sys.argv[1]).group())
