@@ -98,4 +98,4 @@ def main(subject):
 ### Start Pre-processing ###
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    main(sys.argv[1])
