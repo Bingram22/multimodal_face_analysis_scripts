@@ -44,6 +44,7 @@ def main(subject):
 
     # Read Raw
     raw = read_raw_bids(bids_path=bids_path, verbose=False, extra_params = {'preload' : True})
+    raw.resample(128)
     raw.set_channel_types({'EEG061' : 'eog', 'EEG062' : 'eog', 'EEG063' : 'ecg', 'EEG064' : 'misc'})
 
     ### Create Initial MNE Report ###
@@ -90,8 +91,25 @@ def main(subject):
     ecg_scores=ecg_scores
     )
 
+    # Remove bad components
+    ica.apply(raw_average_ref)
+
     ### Save MNE Report ###
-    report.save(f"sub-{subject}_preprocessing_report.html", overwrite=True)
+
+    # Define the output directory
+    output_dir = f"outputs/01_preprocessing/sub-{subject}/"
+
+    report_path = os.path.join(output_dir, f"sub-{subject}_preprocessing_report.html")
+    fif_path = os.path.join(output_dir, f"sub-{subject}_preprocessed_data.fif")
+
+    # Create the directory if it does not exist
+    os.makedirs(output_dir, exist_ok=True)
+
+    # Save the MNE Report
+    report.save(report_path, overwrite=True)
+
+    # Save the MNE object (e.g., Raw, Epochs)
+    raw_average_ref.save(fif_path, overwrite=True)
 
 ### Start Pre-processing ###
 
