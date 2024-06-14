@@ -44,7 +44,7 @@ def main(subject):
 
     # Read Raw
     raw = read_raw_bids(bids_path=bids_path, verbose=False, extra_params = {'preload' : True})
-    raw.resample(128)
+    raw.resample(200)
     raw.set_channel_types({'EEG061' : 'eog', 'EEG062' : 'eog', 'EEG063' : 'ecg', 'EEG064' : 'misc'})
 
     ### Create Initial MNE Report ###
@@ -52,11 +52,11 @@ def main(subject):
     report.add_raw(raw=raw, title="Raw", psd=True)
 
     ### Bandpass Filter ###
-    raw_bandpass = raw.copy().filter(0.25,125)
+    raw_bandpass = raw.copy().filter(0.25,100)
     report.add_raw(raw=raw_bandpass, title="Bandpass Filter", psd=True)
 
     ### Notch Filter Powerline Frequency & Harmonics ###
-    powerline_freqs = (60, 120, 240)
+    powerline_freqs = (50, 100, 150)
     raw_notch = raw_bandpass.copy().notch_filter(freqs=powerline_freqs)
     report.add_raw(raw=raw_notch, title="Powerline Notch Filter", psd=True)
 
@@ -75,7 +75,7 @@ def main(subject):
 
     # Make a copy with 1Hz highpass to remove drift for ICA
     raw_filt = raw_average_ref.copy().filter(l_freq=1.0, h_freq=None)
-    ica.fit(raw_filt)
+    ica.fit(raw_filt, n_components = 30, max_iter="auto", random_state=42)
 
     ecg_components, ecg_scores = ica.find_bads_ecg(raw_average_ref)
     eog_components, eog_scores = ica.find_bads_eog(raw_average_ref)
