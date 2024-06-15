@@ -55,8 +55,8 @@ def main(subject):
     raw_bandpass = raw.copy().filter(0.25,80)
     report.add_raw(raw=raw_bandpass, title="Bandpass Filter", psd=True)
 
-    ### Notch Filter Powerline Frequency & Harmonics ###
-    powerline_freqs = (50, 100, 150)
+    ### Notch Filter Powerline Frequency ###
+    powerline_freqs = (50)
     raw_notch = raw_bandpass.copy().notch_filter(freqs=powerline_freqs)
     report.add_raw(raw=raw_notch, title="Powerline Notch Filter", psd=True)
 
