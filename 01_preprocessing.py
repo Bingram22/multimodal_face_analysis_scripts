@@ -71,7 +71,7 @@ def main(subject):
     report.add_raw(raw=raw_average_ref, title="Average Reference", psd=True)
 
     ### ICA Denoising ###
-    ica = mne.preprocessing.ICA(max_iter="auto")
+    ica = mne.preprocessing.ICA(n_components = 30, max_iter="auto", random_state=42)
 
     # Make a copy with 1Hz highpass to remove drift for ICA
     raw_filt = raw_average_ref.copy().filter(l_freq=1.0, h_freq=None)
