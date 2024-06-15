@@ -75,7 +75,7 @@ def main(subject):
 
     # Make a copy with 1Hz highpass to remove drift for ICA
     raw_filt = raw_average_ref.copy().filter(l_freq=1.0, h_freq=None)
-    ica.fit(raw_filt, n_components = 30, max_iter="auto", random_state=42)
+    ica.fit(raw_filt)
 
     ecg_components, ecg_scores = ica.find_bads_ecg(raw_average_ref)
     eog_components, eog_scores = ica.find_bads_eog(raw_average_ref)
