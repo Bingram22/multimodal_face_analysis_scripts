@@ -24,7 +24,7 @@ from mne_bids import (
 )
 
 import sys
-
+import os
 from pyprep.find_noisy_channels import NoisyChannels
 
 ### Define Preprocessing Pipeline ###
